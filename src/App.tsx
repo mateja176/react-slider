@@ -4,12 +4,17 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 
-const CustomSlide: React.FC<{ i: number }> = ({ i, ...props }) => {
+const CustomSlide: React.FC<
+  { i: number } & React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  >
+> = ({ i, ...props }) => {
   return (
     <div
       {...props}
       style={{
-        height: 800,
+        height: '60vh',
         background: 'lightcoral',
         display: 'grid',
         alignItems: 'center',
@@ -21,23 +26,52 @@ const CustomSlide: React.FC<{ i: number }> = ({ i, ...props }) => {
   );
 };
 
-type Settings = React.ComponentProps<typeof Slider>;
+const circleSize = 10;
 
-const settings: Settings = {
-  dots: true,
-  infinite: true,
-};
+const playSpeed = 2000;
 
 const SimpleSlider: React.FC = () => {
+  const [activeIndex, setActiveIndex] = React.useState(0);
+
   return (
     <main
       style={{
         background: '#eee',
-        width: '50vw',
+        width: '60vw',
       }}
     >
-      <h2>Single Item</h2>
-      <Slider {...settings}>
+      <h2>React Slick Slider</h2>
+      <Slider
+        autoplay
+        autoplaySpeed={playSpeed}
+        afterChange={setActiveIndex}
+        arrows={false}
+        pauseOnHover={false}
+        dots
+        appendDots={dots => {
+          return (
+            <div
+              style={{
+                bottom: 0,
+              }}
+            >
+              {dots}
+            </div>
+          );
+        }}
+        customPaging={i => {
+          return (
+            <div
+              style={{
+                height: circleSize,
+                width: circleSize,
+                borderRadius: '50%',
+                background: i === activeIndex ? '#19b2d2' : 'white',
+              }}
+            />
+          );
+        }}
+      >
         {range(1, 4).map(i => (
           <CustomSlide key={i} i={i} />
         ))}
