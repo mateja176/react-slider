@@ -10,6 +10,8 @@ const CustomSlider: React.FC<{
 }> = ({ children, startIndex = 0, width = 1000, height = 800 }) => {
   const [activateIndex, setActiveIndex] = React.useState<number>(startIndex);
 
+  const childCount = React.Children.count(children) - 1;
+
   return (
     <div
       style={{
@@ -21,6 +23,8 @@ const CustomSlider: React.FC<{
       }}
     >
       {React.Children.map(children, (child, i) => {
+        const offset = i - activateIndex;
+
         return (
           <div
             style={{
@@ -29,7 +33,7 @@ const CustomSlider: React.FC<{
               position: 'absolute',
               top: 0,
               left: 0,
-              transform: `translateX(${(i - activateIndex) * width}px)`,
+              transform: `translateX(${offset * width}px)`,
               transition: 'all 0.5s ease-in-out',
             }}
           >
