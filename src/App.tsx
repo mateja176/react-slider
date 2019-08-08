@@ -68,6 +68,7 @@ const CustomSlider: React.FC<{
 
         return (
           <div
+            draggable
             onClick={toggleReset}
             style={{
               width,
@@ -117,6 +118,7 @@ const CustomSlider: React.FC<{
     </div>
   );
 };
+
 const App: React.FC = () => {
   return (
     <div>
@@ -130,17 +132,12 @@ const App: React.FC = () => {
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '5em',
+              background: 'linear-gradient(to right, tomato, royalblue)',
             }}
           >
             {i}
           </div>
           // <img src="https://placeimg.com/1000/800" alt={i.toString()} />
-          //   <div
-          //     style={{
-          //       height: '100%',
-          //       background: 'linear-gradient(to right, tomato, royalblue)',
-          //     }}
-          //   />
         ))}
       </CustomSlider>
       {/* <SimpleSlider /> */}
