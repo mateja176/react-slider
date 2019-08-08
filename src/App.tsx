@@ -111,6 +111,13 @@ const App: React.FC = () => {
           >
             {i}
           </div>
+          // <img src="https://placeimg.com/1000/800" alt={i.toString()} />
+          //   <div
+          //     style={{
+          //       height: '100%',
+          //       background: 'linear-gradient(to right, tomato, royalblue)',
+          //     }}
+          //   />
         ))}
       </CustomSlider>
       {/* <SimpleSlider /> */}
