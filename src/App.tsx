@@ -13,7 +13,7 @@ const CustomSlider: React.FC<{
   startIndex = 0,
   width = 1000,
   height = 800,
-  slideDuration = 2000,
+  slideDuration,
 }) => {
   const [activateIndex, setActiveIndex] = React.useState<number>(startIndex);
 
@@ -23,13 +23,15 @@ const CustomSlider: React.FC<{
   const childCount = React.Children.count(children);
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex(activateIndex => (activateIndex + 1) % childCount);
-    }, slideDuration);
+    if (slideDuration) {
+      const interval = setInterval(() => {
+        setActiveIndex(activateIndex => (activateIndex + 1) % childCount);
+      }, slideDuration);
 
-    return () => {
-      clearInterval(interval);
-    };
+      return () => {
+        clearInterval(interval);
+      };
+    }
   }, [reset]);
 
   return (
