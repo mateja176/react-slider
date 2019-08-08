@@ -7,10 +7,30 @@ const CustomSlider: React.FC<{
   startIndex?: 0;
   width?: number;
   height?: number;
-}> = ({ children, startIndex = 0, width = 1000, height = 800 }) => {
+  slideDuration?: number;
+}> = ({
+  children,
+  startIndex = 0,
+  width = 1000,
+  height = 800,
+  slideDuration = 2000,
+}) => {
   const [activateIndex, setActiveIndex] = React.useState<number>(startIndex);
 
-  const childCount = React.Children.count(children) - 1;
+  const [reset, setReset] = React.useState(true);
+  const toggleReset = () => setReset(newReset => !newReset);
+
+  const childCount = React.Children.count(children);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex(activateIndex => (activateIndex + 1) % childCount);
+    }, slideDuration);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [reset]);
 
   return (
     <div
@@ -27,6 +47,7 @@ const CustomSlider: React.FC<{
 
         return (
           <div
+            onClick={toggleReset}
             style={{
               width,
               height,
