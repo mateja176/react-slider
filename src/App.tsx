@@ -16,6 +16,9 @@ const CustomSlider: React.FC<{
   slideDuration,
 }) => {
   const [activateIndex, setActiveIndex] = React.useState<number>(startIndex);
+  const [lastActivateIndex, setLastActiveIndex] = React.useState<number>(
+    startIndex,
+  );
 
   const [reset, setReset] = React.useState(true);
   const toggleReset = () => setReset(newReset => !newReset);
@@ -25,7 +28,11 @@ const CustomSlider: React.FC<{
   React.useEffect(() => {
     if (slideDuration) {
       const interval = setInterval(() => {
-        setActiveIndex(activateIndex => (activateIndex + 1) % childCount);
+        setActiveIndex(activateIndex => {
+          setLastActiveIndex(activateIndex);
+
+          return (activateIndex + 1) % childCount;
+        });
       }, slideDuration);
 
       return () => {
@@ -47,6 +54,10 @@ const CustomSlider: React.FC<{
       {React.Children.map(children, (child, i) => {
         const offset = i - activateIndex;
 
+        const isOnTheEdge = Math.abs(offset) + 1 === childCount;
+
+        const isToTheRight = Math.sign(offset);
+
         return (
           <div
             onClick={toggleReset}
@@ -56,8 +67,12 @@ const CustomSlider: React.FC<{
               position: 'absolute',
               top: 0,
               left: 0,
-              transform: `translateX(${offset * width}px)`,
-              transition: 'all 0.5s ease-in-out',
+              transform: `translateX(${(isOnTheEdge ? -isToTheRight : offset) *
+                width}px)`,
+              transition:
+                i === activateIndex || i === lastActivateIndex
+                  ? 'all 0.5s ease-in-out'
+                  : '',
             }}
           >
             {child}
@@ -86,6 +101,7 @@ const CustomSlider: React.FC<{
                 cursor: 'pointer',
               }}
               onClick={() => {
+                setLastActiveIndex(activateIndex);
                 setActiveIndex(i);
                 toggleReset();
               }}
@@ -99,8 +115,8 @@ const CustomSlider: React.FC<{
 const App: React.FC = () => {
   return (
     <div>
-      <CustomSlider>
-        {range(0, 5).map(i => (
+      <CustomSlider slideDuration={2000}>
+        {range(0, 3).map(i => (
           <div
             key={i}
             style={{
