@@ -4,7 +4,7 @@ import React from 'react';
 const circleSize = 10;
 
 const CustomSlider: React.FC<{
-  startIndex?: 0;
+  startIndex?: number;
   width?: number;
   height?: number;
   slideDuration?: number;
@@ -15,10 +15,10 @@ const CustomSlider: React.FC<{
   height = 800,
   slideDuration,
 }) => {
-  const [activateIndex, setActiveIndex] = React.useState<number>(startIndex);
-  const [lastActivateIndex, setLastActiveIndex] = React.useState<number>(
-    startIndex,
-  );
+  const [{ current, previous }, setActive] = React.useState({
+    current: startIndex,
+    previous: startIndex,
+  });
 
   const [reset, setReset] = React.useState(true);
   const toggleReset = () => setReset(newReset => !newReset);
@@ -28,11 +28,10 @@ const CustomSlider: React.FC<{
   React.useEffect(() => {
     if (slideDuration) {
       const interval = setInterval(() => {
-        setActiveIndex(activateIndex => {
-          setLastActiveIndex(activateIndex);
-
-          return (activateIndex + 1) % childCount;
-        });
+        setActive(({ current }) => ({
+          previous: current,
+          current: (current + 1) % childCount,
+        }));
       }, slideDuration);
 
       return () => {
@@ -52,7 +51,7 @@ const CustomSlider: React.FC<{
       }}
     >
       {React.Children.map(children, (child, i) => {
-        const offset = i - activateIndex;
+        const offset = i - current;
 
         const isOnTheEdge = Math.abs(offset) + 1 === childCount;
 
@@ -70,9 +69,7 @@ const CustomSlider: React.FC<{
               transform: `translateX(${(isOnTheEdge ? -isToTheRight : offset) *
                 width}px)`,
               transition:
-                i === activateIndex || i === lastActivateIndex
-                  ? 'all 0.5s ease-in-out'
-                  : '',
+                i === current || i === previous ? 'all 0.5s ease-in-out' : '',
             }}
           >
             {child}
@@ -96,13 +93,12 @@ const CustomSlider: React.FC<{
                 width: circleSize,
                 height: circleSize,
                 borderRadius: '50%',
-                background: activateIndex === i ? '#19b2d2' : 'white',
+                background: current === i ? '#19b2d2' : 'white',
                 marginRight: circleSize,
                 cursor: 'pointer',
               }}
               onClick={() => {
-                setLastActiveIndex(activateIndex);
-                setActiveIndex(i);
+                setActive({ previous: current, current: i });
                 toggleReset();
               }}
             />
