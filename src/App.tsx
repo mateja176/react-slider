@@ -85,6 +85,7 @@ const CustomSlider: React.FC<{
               }}
               onClick={() => {
                 setActiveIndex(i);
+                toggleReset();
               }}
             />
           );
@@ -97,7 +98,7 @@ const App: React.FC = () => {
   return (
     <div>
       <CustomSlider>
-        {range(0, 3).map(i => (
+        {range(0, 5).map(i => (
           <div
             key={i}
             style={{
@@ -105,6 +106,7 @@ const App: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              fontSize: '5em',
             }}
           >
             {i}
