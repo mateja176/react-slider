@@ -68,7 +68,6 @@ const CustomSlider: React.FC<{
 
         return (
           <div
-            draggable
             onClick={toggleReset}
             style={{
               width,

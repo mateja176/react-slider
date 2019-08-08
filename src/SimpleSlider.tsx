@@ -46,7 +46,6 @@ const SimpleSlider: React.FC = () => {
         autoplaySpeed={playSpeed}
         afterChange={setActiveIndex}
         arrows={false}
-        pauseOnHover={false}
         dots
         appendDots={dots => {
           return (
