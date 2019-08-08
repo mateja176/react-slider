@@ -3,8 +3,10 @@ import React from 'react';
 
 const circleSize = 10;
 
+type Index = number;
+
 const CustomSlider: React.FC<{
-  startIndex?: number;
+  startIndex?: Index;
   width?: number;
   height?: number;
   slideDuration?: number;
@@ -20,6 +22,16 @@ const CustomSlider: React.FC<{
     previous: startIndex,
   });
 
+  const setActiveIndex = (index: Index) => {
+    setActive({ current: index, previous: current });
+  };
+  const setActiveIndexAsync = (callback: (index: Index) => Index) => {
+    setActive(active => ({
+      previous: active.current,
+      current: callback(active.current),
+    }));
+  };
+
   const [reset, setReset] = React.useState(true);
   const toggleReset = () => setReset(newReset => !newReset);
 
@@ -28,17 +40,14 @@ const CustomSlider: React.FC<{
   React.useEffect(() => {
     if (slideDuration) {
       const interval = setInterval(() => {
-        setActive(({ current }) => ({
-          previous: current,
-          current: (current + 1) % childCount,
-        }));
+        setActiveIndexAsync(oldCurrent => (oldCurrent + 1) % childCount);
       }, slideDuration);
 
       return () => {
         clearInterval(interval);
       };
     }
-  }, [reset]);
+  }, [reset, childCount, slideDuration]);
 
   return (
     <div
@@ -98,7 +107,7 @@ const CustomSlider: React.FC<{
                 cursor: 'pointer',
               }}
               onClick={() => {
-                setActive({ previous: current, current: i });
+                setActiveIndex(i);
                 toggleReset();
               }}
             />
